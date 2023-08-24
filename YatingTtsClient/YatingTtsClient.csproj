@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>YatingTtsClient</PackageId>
+    <Version>0.0.1</Version>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Authors>Pinke Yu</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/pinkeyu7/yating-tts-sdk-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Copyright>Copyright Pinke Yu 2023</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Dto\" />
+    <None Remove="Constants\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dto\" />
+    <Folder Include="Constants\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+  </ItemGroup>
+</Project>
