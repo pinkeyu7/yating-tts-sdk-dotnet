@@ -12,7 +12,6 @@ namespace YatingTtsClient
 {
     public class TtsClient
     {
-
         private readonly string TtsApiUrl;
         private readonly string TtsApiKey;
 
@@ -22,15 +21,15 @@ namespace YatingTtsClient
             this.TtsApiKey = ttsApiKey;
         }
 
-        public void Synthesize(string inputText, string inputType, string voiceModel, string audioEncoding, string audioSampleRate, string filePath)
+        public void Synthesize(string inputText, string inputType, string voiceModel, double voiceSpeed, double voicePitch, double voiceEnergy, string audioEncoding, string audioSampleRate, string filePath)
         {
             try
             {
                 // parameter validation
-                Validation(inputType, voiceModel, audioEncoding, audioSampleRate);
+                Validation(inputType, voiceModel, voiceSpeed, voicePitch, voiceEnergy, audioEncoding, audioSampleRate);
 
                 // mapping http request body
-                StringContent bodyString = BodyGenerator(inputText, inputType, voiceModel, audioEncoding, audioSampleRate);
+                StringContent bodyString = BodyGenerator(inputText, inputType, voiceModel, voiceSpeed, voicePitch, voiceEnergy, audioEncoding, audioSampleRate);
 
                 // send http post request
                 ResponseDto responseDto = SendHttpRequest(bodyString);
@@ -102,9 +101,9 @@ namespace YatingTtsClient
             }
         }
 
-        private StringContent BodyGenerator(string inputText, string inputType, string voiceModel, string audioEncoding, string audioSampleRate)
+        private StringContent BodyGenerator(string inputText, string inputType, string voiceModel, double voiceSpeed, double voicePitch, double voiceEnergy, string audioEncoding, string audioSampleRate)
         {
-            RequestDto request = new RequestDto(inputText, inputType, voiceModel, audioEncoding, audioSampleRate);
+            RequestDto request = new RequestDto(inputText, inputType, voiceModel, voiceSpeed, voicePitch, voiceEnergy, audioEncoding, audioSampleRate);
             string jsonString = JsonSerializer.Serialize(request);
             Console.WriteLine($"Post Body Json String: {jsonString}");
 
@@ -112,7 +111,7 @@ namespace YatingTtsClient
             return jsonEncodeString;
         }
 
-        private void Validation(string inputType, string voiceModel, string audioEncoding, string audioSampleRate)
+        private void Validation(string inputType, string voiceModel, double voiceSpeed, double voicePitch, double voiceEnergy, string audioEncoding, string audioSampleRate)
         {
             if (!InputType.Validation(inputType))
             {
@@ -126,9 +125,21 @@ namespace YatingTtsClient
             {
                 throw new Exception("audioEncoding: " + audioEncoding + " is not allowed.");
             }
-            if (!AudioSampleRate.Validation(audioSampleRate))
+            if (!AudioSampleRate.Validation(voiceModel, audioSampleRate))
             {
                 throw new Exception("audioSampleRate: " + audioSampleRate + " is not allowed.");
+            }
+            if (!VoiceSpeed.Validation(voiceSpeed))
+            {
+                throw new Exception("voiceSpeed: " + voiceSpeed + " out of range.");
+            }
+            if (!VoicePitch.Validation(voicePitch))
+            {
+                throw new Exception("voicePitch: " + voicePitch + " out of range.");
+            }
+            if (!VoiceEnergy.Validation(voiceEnergy))
+            {
+                throw new Exception("voiceEnergy: " + voiceEnergy + " out of range.");
             }
         }
     }
